@@ -32,3 +32,10 @@ generic work queue to distribute tasks (WIP)
 `docker run --rm -d --name redis redis`
 `go run cmd/manager/main.go` -> starts workers
 `go run cmd/sender/main.go` -> starts REST API server for :Supplier and :Consumer
+
+### General Flow
+`curl -H 'Content-Type: application/json' -d '{"name": "airflow", "priority": 1, "payload": {"data": "dummy"}}' localhost:1323/airflow` would send the payload to machinery. machinery takes care of allocating :Worker to handle the task. since work is done based on :Worker availability, once task is pushed and there is an available :Worker, it will be processed immediately.
+In order for :Consumer to be able to pull the result when it would like to:
+1. grab the result from result backend (Redis)
+2. requeue in another RabbitMQ Exchange/RoutingKey
+both are not covered by machinery and the current chosen implementation is #2.

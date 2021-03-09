@@ -26,6 +26,8 @@ func (h *Handler) RecvAirflow(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "StatusBadRequest")
 	}
 
+	// NOTE enforce task.Name since we are splitting the handler function
+	task.Name = "airflow"
 	// TODO should probably set airflow as exchange instead
 	if task.RoutingKey == "" {
 		task.RoutingKey = "airflow"
